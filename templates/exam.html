@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Secure Exam</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+
+.info-box{
+    background:white;
+    padding:15px;
+    margin:20px;
+    border-radius:8px;
+}
+
+.question-box{
+    background:white;
+    padding:20px;
+    margin:20px;
+    border-radius:10px;
+}
+
+.info-table{
+    width:100%;
+}
+
+.info-table td{
+    padding:8px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2 style="text-align:center; color:white;">Secure Exam Portal</h2>
+
+<!-- TOP DETAILS -->
+<div class="info-box">
+
+<table class="info-table">
+
+<tr>
+<td><b>Register No:</b> {{ regno }}</td>
+<td><b>Date:</b> {{ exam_date }}</td>
+</tr>
+
+<tr>
+<td><b>Subject:</b> {{ subject }}</td>
+<td><b>Subject Code:</b> {{ code }}</td>
+</tr>
+
+<tr>
+<td><b>Year:</b> {{ year }}</td>
+<td><b>Semester:</b> {{ semester }}</td>
+</tr>
+
+</table>
+
+</div>
+
+<h3 id="timer" style="text-align:center; color:white;">Time Remaining: 45:00</h3>
+
+<!-- QUESTIONS BELOW -->
+<div class="question-box">
+
+<form action="/submit" method="POST">
+
+<input type="hidden" name="reason" id="reason">
+<input type="hidden" id="copywarn" name="copywarn" value="0">
+
+<h3>Question 1</h3>
+<p>{{ q1 }}</p>
+<textarea name="ans1" rows="5" style="width:100%;"></textarea>
+
+<br><br>
+
+<h3>Question 2</h3>
+<p>{{ q2 }}</p>
+<textarea name="ans2" rows="5" style="width:100%;"></textarea>
+
+<br><br>
+
+<button type="submit" onclick="examSubmitted=true">Submit Exam</button>
+
+</form>
+
+</div>
+
+<script>
+// KEEP YOUR EXISTING JS (no change)
+let time = 2700;
+let examSubmitted = false;
+let warnings = 0;
+let copyWarnings = 0;
+
+let timer = setInterval(function(){
+let minutes = Math.floor(time/60);
+let seconds = time % 60;
+if(seconds < 10){ seconds = "0" + seconds; }
+
+document.getElementById("timer").innerHTML =
+"Time Remaining: " + minutes + ":" + seconds;
+
+time--;
+
+if(time < 0 && !examSubmitted){
+examSubmitted = true;
+clearInterval(timer);
+alert("Time finished. Exam submitted automatically.");
+document.getElementById("reason").value =
+"Auto Submitted - Time Finished";
+document.forms[0].submit();
+}
+},1000);
+
+document.addEventListener("visibilitychange", function(){
+if(document.hidden && !examSubmitted){
+warnings++;
+alert("Warning! Tab switching detected");
+if(warnings >= 3){
+examSubmitted = true;
+alert("You switched tabs 3 times. Exam submitted.");
+document.getElementById("reason").value =
+"Auto Submitted - Tab Switched 3 Times";
+document.forms[0].submit();
+}
+}
+});
+
+document.oncopy = function(){
+if(!examSubmitted){
+copyWarnings++;
+alert("Copy detected!");
+document.getElementById("copywarn").value = copyWarnings;
+}
+};
+
+document.onpaste = function(){
+if(!examSubmitted){
+copyWarnings++;
+alert("Paste detected!");
+document.getElementById("copywarn").value = copyWarnings;
+}
+};
+
+document.querySelector("form").addEventListener("submit", function(){
+examSubmitted = true;
+document.getElementById("reason").value = "Submitted Normally";
+});
+</script>
+
+</body>
+</html>

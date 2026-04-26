@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Teacher Dashboard</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#4e73df,#224abe);
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    max-width:600px;
+    margin:auto;
+    box-shadow:0px 5px 15px rgba(0,0,0,0.3);
+}
+
+h2{
+    text-align:center;
+    color:#224abe;
+}
+
+ul{
+    list-style:none;
+    padding:0;
+}
+
+li{
+    margin:10px 0;
+}
+
+a{
+    display:block;
+    padding:10px;
+    background:#4e73df;
+    color:white;
+    text-decoration:none;
+    border-radius:5px;
+    text-align:center;
+}
+
+a:hover{
+    background:#2e59d9;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Teacher Dashboard</h2>
+
+<h3>Student Submissions</h3>
+
+{% if students %}
+<ul>
+{% for student in students %}
+<li>
+<a href="/view/{{student}}">View {{student}} Answers</a>
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No submissions found</p>
+{% endif %}
+
+</div>
+
+</body>
+</html>
